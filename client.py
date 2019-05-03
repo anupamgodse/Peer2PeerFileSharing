@@ -244,5 +244,5 @@ if __name__ == '__main__':
         if(option == 1):
             rfc = input("Enter filename : ")
             response = add_rfc(sock, rfc)
-            print("Added RFC "+ str(rfc_number) + "\nResponse from server is:\n" +response);
+            print("Added RFC "+ str(rfc) + "\nResponse from server is:\n" +response);
             
