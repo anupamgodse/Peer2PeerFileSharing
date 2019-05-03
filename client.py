@@ -242,7 +242,7 @@ if __name__ == '__main__':
         print_options()
         option = int(input("Enter option : "))
         if(option == 1):
-            rfc = raw_input("Enter filename : ")
+            rfc = input("Enter filename : ")
             response = add_rfc(sock, rfc)
             print("Added RFC "+ str(rfc_number) + "\nResponse from server is:\n" +response);
             
