@@ -25,8 +25,10 @@ VERSION_NOT_SUPPORTED=505
 STATUS_CODES={OK:"OK", BAD_REQUEST:"Bad Request", NOT_FOUND:"Not Found", VERSION_NOT_SUPPORTED:"P2P-CI Version Not Supported"}
 
 SERVER_IP = '10.155.18.166'
-HOST_IP = '10.155.18.166'
-HOSTNAME = '10.155.18.166'
+#HOST_IP = '10.155.18.166'
+#HOSTNAME = '10.155.18.166'
+HOST_IP = '10.154.59.244'
+HOSTNAME = '10.154.59.244'
 
 
 
@@ -238,13 +240,9 @@ if __name__ == '__main__':
 
     while True:
         print_options()
-        option = int(raw_input("Enter option : "))
+        option = int(input("Enter option : "))
         if(option == 1):
             rfc = raw_input("Enter filename : ")
             response = add_rfc(sock, rfc)
             print("Added RFC "+ str(rfc_number) + "\nResponse from server is:\n" +response);
             
-
-
-
-
