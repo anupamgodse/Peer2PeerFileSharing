@@ -189,6 +189,9 @@ def rfc_download_request(rfc_number, hostname, port):
 
     split_response = data.split('\r\n')
 
+    if(split_response[0].split()[1] != OK):
+        return '\r\n'.join(split_response[:6])
+
     data = split_response[6]
 
     filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
