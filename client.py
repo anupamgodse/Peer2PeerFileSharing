@@ -14,7 +14,7 @@ from threading import Thread
 VERSION="P2P-CI/1.0"
 HOSTOS=platform.platform()
 #MAX_RESPONSE_SIZE=5*1024*1024 #Max file size = 5MB (assumed)
-MAX_RESPONSE_SIZE=4096 #Max file size = 5MB (assumed)
+MAX_RESPONSE_SIZE=1024 #Max file size = 5MB (assumed)
 MAX_REQUEST_SIZE=4096
 SERVER_PORT=7734
 RFCS_PATH = "./RFCs/client1/"
@@ -102,21 +102,35 @@ def serve_peers():
                 filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
                 current_time = strftime("%a, %d %b %Y %X GMT", gmtime())
                 modified_time = strftime("%a, %d %b %Y %X GMT", time.localtime(os.path.getmtime(filepath)))
-                with open(filepath, 'r') as myfile:
+                with open(filepath, 'rb') as myfile:
                       data = myfile.read()
 
                 data_length = str(len(data))
+
+                #response = VERSION+" "+str(response_code)+" "+STATUS_CODES[response_code]+"\r\n"+\
+                #            "Date: "+current_time+"\r\n"+\
+                #            "OS: "+HOSTOS+"\r\n"+\
+                #            "Last-Modified: "+ modified_time+"\r\n"+\
+                #            "Content-Length: " + data_length+"\r\n"+\
+                #            "Content Type: text/text\r\n"+\
+                #            data+"\r\n"+\
+                #            "\r\n"
 
                 response = VERSION+" "+str(response_code)+" "+STATUS_CODES[response_code]+"\r\n"+\
                             "Date: "+current_time+"\r\n"+\
                             "OS: "+HOSTOS+"\r\n"+\
                             "Last-Modified: "+ modified_time+"\r\n"+\
                             "Content-Length: " + data_length+"\r\n"+\
-                            "Content Type: text/text\r\n"+\
-                            data+"\r\n"+\
-                            "\r\n"
+                            "Content Type: text/text\r\n"#+\
+                            #data+"\r\n"+\
+                            #"\r\n"
 
-        peer_sock.sendall(response.encode())
+                encoded_resp = response.encode() + data + '\r\n\r\n'.encode()
+
+                
+
+        #peer_sock.sendall(response.encode())
+        peer_sock.sendall(encoded_resp)
         peer_sock.close()
 
 
@@ -190,23 +204,26 @@ def rfc_download_request(rfc_number, hostname, port):
     
     download_sock.sendall(download_request.encode())
     
+    #response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
     response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
     #print(response)
     split_response = response.split('\r\n')
-    data = split_response[6]
+    #data = split_response[6]
+    data = split_response[6].encode()
     data_len = int(split_response[4].split(':')[1])
     while True:
-        response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
+        #response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
+        response = download_sock.recv(MAX_RESPONSE_SIZE)
         #print(response)
         if not response:
-            data = data.split('\r\n')[0]
+            #data = data.split('\r\n')[0]
             break
         data+=response
 
     #print(data)
     filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
 
-    myfile = open(filepath, 'w')
+    myfile = open(filepath, 'wb')
 
     print("Writing to file ", filepath)
     myfile.write(data)
