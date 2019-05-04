@@ -208,15 +208,15 @@ def rfc_download_request(rfc_number, hostname, port):
     response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
     #print(response)
     split_response = response.split('\r\n')
-    #data = split_response[6]
-    data = split_response[6].encode()
+    data = split_response[6]
+    #data = split_response[6].encode()
     data_len = int(split_response[4].split(':')[1])
     while True:
-        #response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
-        response = download_sock.recv(MAX_RESPONSE_SIZE)
+        response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
+        #response = download_sock.recv(MAX_RESPONSE_SIZE)
         #print(response)
         if not response:
-            #data = data.split('\r\n')[0]
+            data = data.split('\r\n')[0]
             break
         data+=response
 
@@ -226,7 +226,7 @@ def rfc_download_request(rfc_number, hostname, port):
     myfile = open(filepath, 'wb')
 
     print("Writing to file ", filepath)
-    myfile.write(data)
+    myfile.write(data.encode())
     print("done")
 
     myfile.close()
