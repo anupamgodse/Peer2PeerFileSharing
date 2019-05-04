@@ -112,7 +112,6 @@ def serve_peers():
         peer_sock.close()
 
 
-
 #Add available RFC to the server
 def add_rfc(sock, rfc):
     rfc_title = rfc.split('.')[0]
@@ -216,6 +215,7 @@ if __name__ == '__main__':
     #spawn a thread to serve other peers
     p_serve_peers = Thread(target=serve_peers);
 
+    p_serve_peers.daemon = True
     p_serve_peers.start()
 
     SERVER_IP = socket.gethostbyname(SERVER_NAME)
@@ -245,6 +245,5 @@ if __name__ == '__main__':
             response = rfc_download_request(download_rfc_number, get_rfc_from, get_rfc_from_port);
             print("Download RFC\nResponse from server is:\n" +response);
         elif(option == 5):
-            print("Logging out")
             sock.close()
             exit(0)
