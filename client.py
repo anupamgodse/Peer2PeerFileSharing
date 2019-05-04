@@ -61,7 +61,7 @@ def serve_peers():
 
     while True:
         peer_sock, peer_address = upload_sock.accept()
-        print("Accepted ", peer_address)
+        #print("Accepted ", peer_address)
         request = peer_sock.recv(MAX_REQUEST_SIZE)
         if not request:
             continue;
@@ -187,7 +187,11 @@ def rfc_download_request(rfc_number, hostname, port):
             break
         data+=response
 
-    data = data.split('\r\n')[6]
+
+    split_response = data.split('\r\n')
+
+    data = split_response[6]
+
     filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
 
     myfile = open(filepath, 'w')
@@ -196,7 +200,9 @@ def rfc_download_request(rfc_number, hostname, port):
 
     myfile.close()
     download_sock.close()
-    return response
+    
+    return '\r\n'.join(split_response[:6])
+    #return response
 
 def print_options():
     print("1. ADD")
@@ -241,4 +247,4 @@ if __name__ == '__main__':
         elif(option == 5):
             print("Logging out")
             sock.close()
-            break
+            exit(0)
