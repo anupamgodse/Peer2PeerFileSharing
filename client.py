@@ -69,6 +69,7 @@ def serve_peers():
 
     while True:
         peer_sock, peer_address = upload_sock.accept()
+        print("Accepted ", peer_address)
         request = peer_sock.recv(MAX_REQUEST_SIZE)
         if not request:
             continue;
@@ -205,7 +206,7 @@ def rfc_download_request(rfc_number, hostname, port):
     #print(data)
     filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
 
-    myfile = open(filepath, 'w+')
+    myfile = open(filepath, 'w')
 
     print("Writing to file ", filepath)
     myfile.write(data)
