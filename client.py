@@ -190,11 +190,13 @@ def rfc_download_request(rfc_number, hostname, port):
     download_sock.sendall(download_request.encode())
     
     response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
+    print(response)
     split_response = response.split('\r\n')
     data = split_response[6]
     data_len = int(split_response[4].split(':')[1])
     while True:
         response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
+        print(response)
         if not response:
             break
         data+=response
@@ -271,7 +273,7 @@ if __name__ == '__main__':
         elif(option == 4):
             download_rfc_number = input("Enter RFC number ");
             get_rfc_from = input("Enter host ");
-            get_rfc_from_port = input("Enter port ");
+            get_rfc_from_port = int(input("Enter port "));
             response = rfc_download_request(download_rfc_number, get_rfc_from, get_rfc_from_port);
             print("Download RFC\nResponse from server is:\n" +response);
         elif(option == 5):
