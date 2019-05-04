@@ -135,6 +135,12 @@ def add_rfc(sock, rfc):
     sock.sendall(add_request.encode());
 
     response = sock.recv(MAX_RESPONSE_SIZE).decode();
+
+    if(int((response.split('\r\n')[0]).split()[1]) == OK):
+        lock_my_rfcs.acquire()
+        my_rfcs.add(rfc_number)
+        lock_my_rfcs.release()
+
     return response;
 
 #lookup  RFC
