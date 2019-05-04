@@ -116,6 +116,7 @@ def serve_peers():
                             "\r\n"
 
         peer_sock.sendall(response.encode())
+        peer_sock.close()
 
 
 
@@ -137,7 +138,7 @@ def add_rfc(sock, rfc):
     return response;
 
 #lookup  RFC
-def lookup_rfc(sock, rfc_number, my_upload_port, rfc_title):
+def lookup_rfc(sock, rfc_number, rfc_title):
     lookup_request = "LOOKUP"+" "+"RFC "+str(rfc_number)+" "+VERSION+"\r\n"+\
                     "Host:"+" "+HOSTNAME+"_"+str(my_upload_port)+"\r\n"+\
                     "Port:"+" "+str(my_upload_port)+"\r\n"+\
@@ -180,24 +181,31 @@ def rfc_download_request(rfc_number, hostname, port):
     download_sock.connect((host_ip, port))
     
     download_sock.sendall(download_request.encode())
+    
     response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
-    download_sock.close()
-
     split_response = response.split('\r\n')
     data = split_response[6]
+    data_len = int(split_response[4].split(':')[1])
+    while True:
+        response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
+        if not response:
+            break
+        data+=response
 
     filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
 
     with open(filepath, 'w') as myfile:
           myfile.write(data)
 
+    download_sock.close()
     return response
 
 def print_options():
     print("1. ADD")
     print("2. LOOKUP")
     print("3. LIST")
-    print("4. LOGOUT")
+    print("4. Download RFC")
+    print("5. LOGOUT")
 
 #Client main
 if __name__ == '__main__':
@@ -245,4 +253,20 @@ if __name__ == '__main__':
             rfc = input("Enter filename : ")
             response = add_rfc(sock, rfc)
             print("Added RFC "+ str(rfc) + "\nResponse from server is:\n" +response);
-            
+        elif(option == 2):
+            lookup_rfc_number = input("Enter RFC number to lookup for")
+            lookup_rfc_title = 'rfc'+str(rfc_number) 
+            response = lookup_rfc(sock, lookup_rfc_number, lookup_rfc_title)
+            print("Lookup RFC "+ str(lookup_rfc_number) + "\nResponse from server is:\n" +response);
+        elif(option == 3):
+            response = list_rfcs(sock, my_upload_port)
+            print("LIST RFC\nResponse from server is:\n" +response);
+        elif(option == 4):
+            download_rfc_number = input("Enter RFC number ");
+            get_rfc_from = input("Enter host ");
+            get_rfc_from_port = input("Enter port ");
+            response = rfc_download_request(lookup_rfc_number, get_rfc_from, get_rfc_from_port);
+            print("Download RFC\nResponse from server is:\n" +response);
+        elif(option == 5):
+            print("To do")
+
