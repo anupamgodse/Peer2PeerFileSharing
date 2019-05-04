@@ -290,4 +290,4 @@ if __name__ == '__main__':
         elif(option == 5):
             print("Logging out")
             sock.close()
-
+            break

@@ -188,10 +188,10 @@ def serve_client(connection, client_address):
 
         lock_rfcs.acquire()
 
-        for key, l in rfcs.items():
+        for key, l in rfcs.copy().items():
             for each in l:
                 if(each.hostname == client_address[0]):
-                    l.remove(each)
+                    rfcs[key].remove(each)
 
             if not l:
                 rfcs.pop(key)
@@ -200,7 +200,13 @@ def serve_client(connection, client_address):
 
         lock_peers.acquire()
 
-        peers.remove(client_address[0])
+        print(client_address)
+        for each in peers.copy():
+            #print(each.hostname, each.port)
+            if each.hostname == client_address[0]:
+                peers.remove(each)
+
+        #peers.remove(client_address[0])
 
         lock_peers.release()
 
