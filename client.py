@@ -190,11 +190,12 @@ def rfc_download_request(rfc_number, hostname, port):
     
     download_sock.sendall(download_request.encode())
     
-    response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
-    #print(response)
-    split_response = response.split('\r\n')
-    data = split_response[6]
-    data_len = int(split_response[4].split(':')[1])
+    data = ''
+    #response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
+    ##print(response)
+    #split_response = response.split('\r\n')
+    #data = split_response[6]
+    #data_len = int(split_response[4].split(':')[1])
     while True:
         response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
         #print(response)
@@ -202,8 +203,10 @@ def rfc_download_request(rfc_number, hostname, port):
             break
         data+=response
 
+    
+    data = data.split('\r\n')[6]
     #print(data)
-    data = data[:-2]
+    #data = data[:-2]
     filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
 
     myfile = open(filepath, 'w')
