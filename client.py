@@ -225,13 +225,13 @@ if __name__ == '__main__':
 
     while True:
         print_options()
-        option = int(input("Enter option : "))
+        option = int(input("Enter option: "))
         if(option == 1):
-            rfc = input("Enter filename : ")
+            rfc = input("Enter filename: ")
             response = add_rfc(sock, rfc)
             print("Added RFC "+ str(rfc) + "\nResponse from server is:\n" +response);
         elif(option == 2):
-            lookup_rfc_number = input("Enter RFC number to lookup for")
+            lookup_rfc_number = input("Enter RFC number to lookup for: ")
             lookup_rfc_title = 'rfc'+str(lookup_rfc_number) 
             response = lookup_rfc(sock, lookup_rfc_number, lookup_rfc_title)
             print("Lookup RFC "+ str(lookup_rfc_number) + "\nResponse from server is:\n" +response);
@@ -239,9 +239,9 @@ if __name__ == '__main__':
             response = list_rfcs(sock, my_upload_port)
             print("LIST RFC\nResponse from server is:\n" +response);
         elif(option == 4):
-            download_rfc_number = input("Enter RFC number ");
-            get_rfc_from = input("Enter host ");
-            get_rfc_from_port = int(input("Enter port "));
+            download_rfc_number = input("Enter RFC number: ");
+            get_rfc_from = input("Enter host: ");
+            get_rfc_from_port = int(input("Enter port: "));
             response = rfc_download_request(download_rfc_number, get_rfc_from, get_rfc_from_port);
             print("Download RFC\nResponse from server is:\n" +response);
         elif(option == 5):
