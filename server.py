@@ -70,7 +70,7 @@ def serve_client(connection, client_address):
             data = connection.recv(MAX_BUFF_LEN)
             if not data:
                 break;
-                continue;
+                #continue;
             #print("received "+str(data.decode()))
             request = data.decode().split('\r\n');
 
@@ -185,6 +185,25 @@ def serve_client(connection, client_address):
     finally:
         # Clean up the connection
         print("Closing connection to ", client_address)
+
+        lock_rfcs.acquire()
+
+        for key, l in rfcs.items():
+            for each in l:
+                if(each.hostname == client_address[0]):
+                    l.remove(each)
+
+            if not l:
+                rfcs.pop(key)
+                
+        lock_rfcs.release()
+
+        lock_peers.acquire()
+
+        peers.remove(client_address[0])
+
+        lock_peers.release()
+
         connection.close()
         exit(0)
 

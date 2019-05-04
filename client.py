@@ -126,7 +126,7 @@ def add_rfc(sock, rfc):
     rfc_title = rfc.split('.')[0]
     rfc_number = int(rfc_title[3:])
     add_request = "ADD"+" "+"RFC "+str(rfc_number)+" "+VERSION+"\r\n"+\
-                    "Host:"+" "+HOSTNAME+"_"+str(my_upload_port)+"\r\n"+\
+                    "Host:"+" "+HOSTNAME+"\r\n"+\
                     "Port:"+" "+str(my_upload_port)+"\r\n"+\
                     "Title:"+" "+rfc_title+"\r\n"+\
                     "\r\n";
@@ -148,7 +148,7 @@ def add_rfc(sock, rfc):
 #lookup  RFC
 def lookup_rfc(sock, rfc_number, rfc_title):
     lookup_request = "LOOKUP"+" "+"RFC "+str(rfc_number)+" "+VERSION+"\r\n"+\
-                    "Host:"+" "+HOSTNAME+"_"+str(my_upload_port)+"\r\n"+\
+                    "Host:"+" "+HOSTNAME+"\r\n"+\
                     "Port:"+" "+str(my_upload_port)+"\r\n"+\
                     "Title:"+" "+rfc_title+"\r\n"+\
                     "\r\n";
@@ -163,7 +163,7 @@ def lookup_rfc(sock, rfc_number, rfc_title):
 #list RFCs at server
 def list_rfcs(sock, my_upload_port):
     list_request = "LIST"+" "+"ALL "+VERSION+"\r\n"+\
-                    "Host:"+" "+HOSTNAME+"_"+str(my_upload_port)+"\r\n"+\
+                    "Host:"+" "+HOSTNAME+"\r\n"+\
                     "Port:"+" "+str(my_upload_port)+"\r\n"+\
                     "\r\n";
     
@@ -185,7 +185,8 @@ def rfc_download_request(rfc_number, hostname, port):
     download_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
     #host_ip = socket.gethostbyname(hostname.split('_')[0])
     #print(host_ip, type(host_ip))
-    host_ip = hostname.split('_')[0]
+    #host_ip = hostname.split('_')[0]
+    host_ip = hostname
     download_sock.connect((host_ip, port))
     
     download_sock.sendall(download_request.encode())
@@ -287,5 +288,6 @@ if __name__ == '__main__':
             response = rfc_download_request(download_rfc_number, get_rfc_from, get_rfc_from_port);
             print("Download RFC\nResponse from server is:\n" +response);
         elif(option == 5):
-            print("To do")
+            print("Logging out")
+            sock.close()
 
