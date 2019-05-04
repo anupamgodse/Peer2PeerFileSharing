@@ -272,7 +272,7 @@ if __name__ == '__main__':
             download_rfc_number = input("Enter RFC number ");
             get_rfc_from = input("Enter host ");
             get_rfc_from_port = input("Enter port ");
-            response = rfc_download_request(lookup_rfc_number, get_rfc_from, get_rfc_from_port);
+            response = rfc_download_request(download_rfc_number, get_rfc_from, get_rfc_from_port);
             print("Download RFC\nResponse from server is:\n" +response);
         elif(option == 5):
             print("To do")
