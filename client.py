@@ -25,10 +25,10 @@ VERSION_NOT_SUPPORTED=505
 STATUS_CODES={OK:"OK", BAD_REQUEST:"Bad Request", NOT_FOUND:"Not Found", VERSION_NOT_SUPPORTED:"P2P-CI Version Not Supported"}
 
 SERVER_IP = '10.155.18.166'
-#HOST_IP = '10.155.18.166'
-#HOSTNAME = '10.155.18.166'
-HOST_IP = '10.154.59.244'
-HOSTNAME = '10.154.59.244'
+HOST_IP = '10.155.18.166'
+HOSTNAME = '10.155.18.166'
+#HOST_IP = '10.154.59.244'
+#HOSTNAME = '10.154.59.244'
 
 
 
@@ -138,7 +138,8 @@ def add_rfc(sock, rfc):
 
     if(int((response.split('\r\n')[0]).split()[1]) == OK):
         lock_my_rfcs.acquire()
-        my_rfcs.add(rfc_number)
+        if rfc_number not in my_rfcs:
+            my_rfcs.append(rfc_number)
         lock_my_rfcs.release()
 
     return response;
