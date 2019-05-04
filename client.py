@@ -10,11 +10,9 @@ import platform
 from time import gmtime, strftime
 from threading import Thread
 
-#HOSTNAME=socket.gethostname()
 VERSION="P2P-CI/1.0"
 HOSTOS=platform.platform()
-#MAX_RESPONSE_SIZE=5*1024*1024 #Max file size = 5MB (assumed)
-MAX_RESPONSE_SIZE=1024 #Max file size = 5MB (assumed)
+MAX_RESPONSE_SIZE=4096
 MAX_REQUEST_SIZE=4096
 SERVER_PORT=7734
 RFCS_PATH = "./RFCs/client1/"
@@ -24,27 +22,21 @@ NOT_FOUND=404
 VERSION_NOT_SUPPORTED=505
 STATUS_CODES={OK:"OK", BAD_REQUEST:"Bad Request", NOT_FOUND:"Not Found", VERSION_NOT_SUPPORTED:"P2P-CI Version Not Supported"}
 
-SERVER_IP = '10.155.18.166'
-HOST_IP = '10.155.18.166'
-HOSTNAME = '10.155.18.166'
-#HOST_IP = '10.154.59.244'
-#HOSTNAME = '10.154.59.244'
+SERVER_NAME = '10.155.18.166'
 
+#HOSTNAME=socket.gethostname()
+HOSTNAME = '10.155.18.166'
+HOST_IP = socket.gethostbyname(HOSTNAME)
 
 
 #init
 my_rfcs = list();
 
-#list of RFCs at client
-#my_rfcs = my_rfcs + [int(re.findall(r'\d+', f)[0]) for f in listdir(RFCS_PATH) if isfile(join(RFCS_PATH, f))];
-
 #lock to perform operations on list of RFCS
 lock_my_rfcs = Lock()
 
-
 #upload port for client
 upload_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-#upload_sock.bind((HOSTNAME, 0));
 upload_sock.bind((HOST_IP, 0));
 my_upload_port = upload_sock.getsockname()[1]
 
@@ -183,38 +175,24 @@ def rfc_download_request(rfc_number, hostname, port):
 
     
     download_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-    #host_ip = socket.gethostbyname(hostname.split('_')[0])
-    #print(host_ip, type(host_ip))
-    #host_ip = hostname.split('_')[0]
-    host_ip = hostname
+    host_ip = socket.gethostbyname(hostname)
     download_sock.connect((host_ip, port))
     
     download_sock.sendall(download_request.encode())
     
     data = ''
-    #response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
-    ##print(response)
-    #split_response = response.split('\r\n')
-    #data = split_response[6]
-    #data_len = int(split_response[4].split(':')[1])
     while True:
         response = download_sock.recv(MAX_RESPONSE_SIZE).decode()
-        #print(response)
         if not response:
             break
         data+=response
 
-    
     data = data.split('\r\n')[6]
-    #print(data)
-    #data = data[:-2]
     filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
 
     myfile = open(filepath, 'w')
 
-    print("Writing to file ", filepath)
     myfile.write(data)
-    print("done")
 
     myfile.close()
     download_sock.close()
@@ -229,42 +207,15 @@ def print_options():
 
 #Client main
 if __name__ == '__main__':
-    #spawn a process to serve other peers
+    #spawn a thread to serve other peers
     p_serve_peers = Thread(target=serve_peers);
 
     p_serve_peers.start()
 
+    SERVER_IP = socket.gethostbyname(SERVER_NAME)
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-    #sock.connect((HOSTNAME, SERVER_PORT))
     sock.connect((SERVER_IP, SERVER_PORT))
-
-    #for rfc_number in my_rfcs:
-    #    #rfc_number = re.findall(r'\d+', each)[0]
-    #    rfc_title="RFC"+str(rfc_number)
-    #    response = add_rfc(sock, rfc_number, my_upload_port, rfc_title)
-    #    print("Added RFC "+ str(rfc_number) + "\nResponse from server is:\n" +response);
-
-
-    #lookup_rfc_number = 500;
-    #lookup_rfc_title = "RFC"+str(lookup_rfc_number)
-    #response = lookup_rfc(sock, lookup_rfc_number, my_upload_port, lookup_rfc_title)
-    #print("Lookup RFC "+ str(lookup_rfc_number) + "\nResponse from server is:\n" +response);
-
-    #split_response = response.split('\r\n');
-    ##print(split_response)
-
-    #rfc_details = split_response[2].split();
-    #get_rfc_from = rfc_details[2]
-    #get_rfc_from_port = int(rfc_details[3])
-
-    ##print("peer details")
-    ##print(get_rfc_from, get_rfc_from_port)
-
-    #response = rfc_download_request(lookup_rfc_number, get_rfc_from, get_rfc_from_port);
-    ##print("Download RFC\nResponse from server is:\n" +response);
-
-    #response = list_rfcs(sock, my_upload_port)
-    #print("LIST RFC\nResponse from server is:\n" +response);
 
     while True:
         print_options()

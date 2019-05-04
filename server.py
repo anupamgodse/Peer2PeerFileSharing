@@ -13,8 +13,8 @@ BAD_REQUEST=400
 NOT_FOUND=404
 VERSION_NOT_SUPPORTED=505
 STATUS_CODES={OK:"OK", BAD_REQUEST:"Bad Request", NOT_FOUND:"Not Found", VERSION_NOT_SUPPORTED:"P2P-CI Version Not Supported"}
+
 #HOSTNAME=socket.gethostname()
-HOST_IP = '10.155.18.166'
 HOST_NAME = '10.155.18.166'
 
 #a list to store active peers
@@ -70,7 +70,6 @@ def serve_client(connection, client_address):
             data = connection.recv(MAX_BUFF_LEN)
             if not data:
                 break;
-                #continue;
             #print("received "+str(data.decode()))
             request = data.decode().split('\r\n');
 
@@ -107,8 +106,6 @@ def serve_client(connection, client_address):
                     new_rfc = Rfc(rfc_number, rfc_title, client_hostname);
                     #Add this RFC to RFCs list
                     lock_rfcs.acquire()
-                    #print("keys");
-                    #print(rfcs.keys())
                     if rfc_number in rfcs.keys():
                         #check if client has already added that RFC(avoid duplication)
                         already_present = False;
@@ -118,27 +115,11 @@ def serve_client(connection, client_address):
                                 #print("Already Present\n");
                                 break;
                         if not already_present:
-                            #print("appending")
-                            #print(new_rfc.number, new_rfc.title, new_rfc.hostname)
-                            #print(type(rfcs[rfc_number]))
-                            #print(type(rfcs))
                             rfcs[rfc_number] = rfcs[rfc_number] + [new_rfc];
-                        """for each, value in rfcs.items():
-                            print(each);
-                            for e in value:
-                                print(e.number, e.title, e.hostname)
-                            print("\n\n");"""
                     else:
-                        #rfcs[rfc_number] = list();
-                        rfcs[rfc_number] = [new_rfc] #list();
-                        #rfcs[rfc_number].append(new_rfc);
+                        rfcs[rfc_number] = [new_rfc]
                     lock_rfcs.release()
                 send_response(connection, response_code, response_data);
-                """for each, value in rfcs.items():
-                    print(each);
-                    for e in value:
-                        print(e.number, e.title, e.hostname)
-                    print("\n\n");"""
             elif(request_type=="LOOKUP"):
                 rfc_number = int(request_row_1[2]);
                 rfc_title = request[3].split()[1];
@@ -164,11 +145,6 @@ def serve_client(connection, client_address):
                     lock_rfcs.release()
                 send_response(connection, response_code, response_data);
             elif(request_type=="LIST"):
-                """for each, value in rfcs.items():
-                    print(each);
-                    for e in value:
-                        print(e.number, e.title, e.hostname)
-                    print("\n\n");"""
                 response_code = OK;
                 lock_rfcs.acquire()
                 lock_peers.acquire()
@@ -200,13 +176,9 @@ def serve_client(connection, client_address):
 
         lock_peers.acquire()
 
-        print(client_address)
         for each in peers.copy():
-            #print(each.hostname, each.port)
             if each.hostname == client_address[0]:
                 peers.remove(each)
-
-        #peers.remove(client_address[0])
 
         lock_peers.release()
 
@@ -218,6 +190,9 @@ if __name__ == '__main__':
     #processes
     spawned = [];
 
+    HOST_IP = socket.gethostbyname(HOST_NAME)
+    #HOST_IP = HOST_NAME
+
     #a well known server port to accept requests from clients
     server_port = SERVER_PORT;
 
@@ -225,16 +200,13 @@ if __name__ == '__main__':
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 
     # Bind the socket to the port
-    #server_address = (HOSTNAME, server_port);
     server_address = (HOST_IP, server_port);
-    #print >>sys.stderr, 'starting up on %s port %s' % server_address
     sock.bind(server_address);
 
     
     #start listening on server_port
     sock.listen();
      
-    i=0
     #keep on accepting new connections from client and spawn new process for each client
     while True:
         print('waiting for a connection');
@@ -242,7 +214,6 @@ if __name__ == '__main__':
 
         #p = Process(target=serve_client, args=(peers, rfcs, lock_peers, lock_rfcs, connection, client_address))
         p = Thread(target=serve_client, args=(connection, client_address))
-        i+=1
 
         spawned.append(p)
 
