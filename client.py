@@ -255,7 +255,7 @@ if __name__ == '__main__':
             print("Added RFC "+ str(rfc) + "\nResponse from server is:\n" +response);
         elif(option == 2):
             lookup_rfc_number = input("Enter RFC number to lookup for")
-            lookup_rfc_title = 'rfc'+str(rfc_number) 
+            lookup_rfc_title = 'rfc'+str(lookup_rfc_number) 
             response = lookup_rfc(sock, lookup_rfc_number, lookup_rfc_title)
             print("Lookup RFC "+ str(lookup_rfc_number) + "\nResponse from server is:\n" +response);
         elif(option == 3):
