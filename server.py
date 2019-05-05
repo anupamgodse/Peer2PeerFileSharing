@@ -15,7 +15,7 @@ VERSION_NOT_SUPPORTED=505
 STATUS_CODES={OK:"OK", BAD_REQUEST:"Bad Request", NOT_FOUND:"Not Found", VERSION_NOT_SUPPORTED:"P2P-CI Version Not Supported"}
 
 #HOSTNAME=socket.gethostname()
-HOST_NAME = '10.155.18.166'
+HOST_NAME = '192.168.1.27'
 
 #a list to store active peers
 peers = list();

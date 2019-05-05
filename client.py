@@ -22,10 +22,10 @@ NOT_FOUND=404
 VERSION_NOT_SUPPORTED=505
 STATUS_CODES={OK:"OK", BAD_REQUEST:"Bad Request", NOT_FOUND:"Not Found", VERSION_NOT_SUPPORTED:"P2P-CI Version Not Supported"}
 
-SERVER_NAME = '10.155.18.166'
+SERVER_NAME = '192.168.1.27'
 
 #HOSTNAME=socket.gethostname()
-HOSTNAME = '10.155.18.166'
+HOSTNAME = '192.168.1.27'
 HOST_IP = socket.gethostbyname(HOSTNAME)
 
 
@@ -189,10 +189,14 @@ def rfc_download_request(rfc_number, hostname, port):
 
     split_response = data.split('\r\n')
 
-    if(split_response[0].split()[1] != OK):
+    #changed
+    content_len = int(split_response[4].split(':')[1])
+
+    if(int(split_response[0].split()[1]) != OK):
         return '\r\n'.join(split_response[:6])
 
-    data = split_response[6]
+    #data = split_response[6]
+    data = data[-4-content_len:-4]
 
     filepath = RFCS_PATH+'rfc'+str(rfc_number)+'.txt'
 
