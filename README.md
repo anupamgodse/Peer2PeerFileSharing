@@ -9,10 +9,10 @@ Following is short description of the system:
 
 Following are the available query/request list (protocol):
 Between Peer and Server:
-  ADD file - Informs server that this peer has a file and is accepting request at upload port.
-  LOOKUP file - Asks server if this file is present with any of the peers, server returns with list of clients with their ip, upload port
-  LIST files - Asks server to list all the files with peer addresses(ip, upload port)
-  LOGOUT - Asks server to delete all the peer associated records indicating the peer is now offline
+  ADD file - Informs server that this peer has a file and is accepting request at upload port.  
+  LOOKUP file - Asks server if this file is present with any of the peers, server returns with list of clients with their ip, upload port  
+  LIST files - Asks server to list all the files with peer addresses(ip, upload port)  
+  LOGOUT - Asks server to delete all the peer associated records indicating the peer is now offline  
   
-Between Peer and Peer:
+Between Peer and Peer:  
   DOWNLOAD file - Asks a particular peer for some file (known from server that this peer has this file
